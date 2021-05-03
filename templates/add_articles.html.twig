@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {# Run `composer require symfony/webpack-encore-bundle`
+           and uncomment the following Encore helpers to start using Symfony UX #}
+        {% block stylesheets %}
+            {#{{ encore_entry_link_tags('app') }}#}
+        {% endblock %}
+
+        {% block javascripts %}
+            {#{{ encore_entry_script_tags('app') }}#}
+        {% endblock %}
+    </head>
+    <body>
+        <div class="container">
+            <div class="row no-gutters">
+                <div class="col-12">
+                    <h1 class="display-4 text-center mt-5">
+                        {{ title }}
+                    </h1>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container">
+            <div class="row no-gutters justify-content-center align-items-center mt-5">
+                <div class="col-6">
+                    {{ form(form) }}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

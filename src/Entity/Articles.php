@@ -23,6 +23,11 @@ class Articles
     private $title;
 
     /**
+     * @ORM\Column(type="string", length=100, nullable=true)
+     */
+    private $category;
+
+    /**
      * @ORM\Column(type="text")
      */
     private $text;
@@ -45,6 +50,18 @@ class Articles
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getСategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setСategory(string $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }
