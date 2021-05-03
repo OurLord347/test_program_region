@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\Articles;
 use App\Entity\PhotoManager;
 use App\Form\ArticlesType;
+use App\Repository\PhotoManagerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Repository\ArticlesRepository;
 
 class ArticlesController extends AbstractController
 {
@@ -94,11 +96,32 @@ class ArticlesController extends AbstractController
     /**
      * @Route("/get_articles", name="get_articles")
      */
-    public function get_articles(): Response
+    public function get_articles(Request $request, ArticlesRepository $ar, PhotoManagerRepository $pmr): Response
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/ArticlesController.php',
-        ]);
+        try{
+            $a = json_decode($request->getContent(), true);
+            $lastQuestion = $ar->findBy(
+                ['deleted'=>'0','category' => $a['category']],
+                ['id' => 'asc'], 5);
+            $requestArray = [];
+            foreach ($lastQuestion as $key => $val){
+                $requestArray[$val->getId()] = [];
+                $requestArray[$val->getId()]['picture_href'] = $val->getPictureHref($pmr);
+                $requestArray[$val->getId()]['text'] = $val->getText();
+                $requestArray[$val->getId()]['title'] = $val->getTitle();
+            }
+
+            $data = [
+                'status' => 200,
+                'records' => json_encode($requestArray),
+            ];
+            return $this->response($data);
+        }catch (\Exception $e){
+            $data = [
+                'status' => 422,
+                'errors' => "Data no valid",
+            ];
+            return $this->response($data, 422);
+        }
     }
 }

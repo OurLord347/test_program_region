@@ -4,11 +4,13 @@ namespace App\Entity;
 
 use App\Repository\ArticlesRepository;
 use Doctrine\ORM\Mapping as ORM;
-
+use App\Entity\PhotoManager;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\PhotoManagerRepository;
 /**
  * @ORM\Entity(repositoryClass=ArticlesRepository::class)
  */
-class Articles
+class Articles extends AbstractController
 {
     /**
      * @ORM\Id
@@ -36,7 +38,21 @@ class Articles
      * @ORM\Column(type="string", length=255)
      */
     private $picture_id;
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $deleted = 0;
 
+    public function getDeleted(): ?bool
+    {
+        return $this->deleted;
+    }
+    public function setDeleted(?bool $deleted): self
+    {
+        $this->deleted = deleted;
+
+        return $this;
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -76,6 +92,11 @@ class Articles
         $this->text = $text;
 
         return $this;
+    }
+    public function getPictureHref(PhotoManagerRepository $pmr): ?string
+    {
+        $pm = $pmr->find($this->picture_id);
+        return $pm->getPhotoPath();
     }
 
     public function getPictureId(): ?string
